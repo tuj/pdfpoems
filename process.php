@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // Get parameters from POST.
 
