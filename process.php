@@ -11,21 +11,10 @@
 // Send mail to receiver.
 // Send succes result back to the frontend.
 
-require_once('fpdf17/fpdf.php');
-require_once('FPDI-1.5.4/fpdi.php');
+require_once('poempdf.php');
 
-class ConcatPdf extends FPDI {
-  public function addPageFromFile($file, $page) {
-    $pageCount = $this->setSourceFile($file);
-    $tplIdx = $this->ImportPage($page);
-    $s = $this->getTemplatesize($tplIdx);
-    $this->AddPage($s['w'] > $s['h'] ? 'L' : 'P', array($s['w'], $s['h']));
-    $this->useTemplate($tplIdx);
-  }
-}
-
-$pdf = new ConcatPdf();
+$pdf = new PoemPdf();
 $pdf->addPageFromFile('pdfs/2.pdf', 7);
-$pdf->addPageFromFile('pdfs/1.pdf', 7);
+$pdf->addPageFromFile('pdfs/1.pdf', 350);
 
 $pdf->Output('concat.pdf', 'D');
