@@ -19,8 +19,8 @@ app.directive('ngEnter', function() {
   };
 });
 
-app.controller('MainController', ['$scope', 
-  function($scope) {
+app.controller('MainController', ['$scope', '$http',
+  function($scope, $http) {
     $scope.email = '';
     $scope.text = '';
 	$scope.disableSubmit = false;
@@ -35,7 +35,16 @@ app.controller('MainController', ['$scope',
 	  }
 	  else {
 	    addText("Processing...");
-		$scope.disableSubmit = true;
+	  	$scope.disableSubmit = true;
+
+      addText("Getting number of pdfs...");
+
+      $http.get('/countitems', function(data) {
+        console.log(data);
+      });
+
+      for (var i = 0; i < 10; i++) {
+      }
 	  }
 	}
   }
