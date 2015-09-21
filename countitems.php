@@ -5,4 +5,4 @@
 
 $fi = new FilesystemIterator(__DIR__ . "/pdfs", FilesystemIterator::SKIP_DOTS);
 $numberOfItems = iterator_count($fi);
-echo $numberOfItems;
+echo json_encode(array("numberOfItems" => $numberOfItems));

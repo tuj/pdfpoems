@@ -13,23 +13,24 @@ class PoemPdf extends FPDI {
 
   public function countPagesInFile($file) {
     $pageCount = $this->setSourceFile($file);
-	return $pageCount;
+    return $pageCount;
   }
-  
+
   public function getNumberOfFiles() {
     $fi = new FilesystemIterator(__DIR__ . "/pdfs", FilesystemIterator::SKIP_DOTS);
-	$numberOfItems = iterator_count($fi);
-	return $numberOfItems;
+    $numberOfItems = iterator_count($fi);
+    return $numberOfItems;
   }
-  
+
   public function getNameForIndex($index) {
     $fi = new FilesystemIterator(__DIR__ . "/pdfs", FilesystemIterator::SKIP_DOTS);
-	$fi->seek($index);
-	
-	if ($fi->valid()) {
+    $fi->seek($index);
+
+    if ($fi->valid()) {
       return $fi->getFilename();
-	} else {
-	  echo 'No file at position ' . $index;
-	}
+    }
+    else {
+      echo 'No file at position ' . $index;
+    }
   }
 }

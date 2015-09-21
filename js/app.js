@@ -5,11 +5,11 @@
 
 var app = angular.module('poemApp', []);
 
-app.directive('ngEnter', function() {
-  return function(scope, element, attrs) {
-    element.bind("keydown keypress", function(event) {
+app.directive('ngEnter', function () {
+  return function (scope, element, attrs) {
+    element.bind("keydown keypress", function (event) {
       if (event.which === 13) {
-        scope.$apply(function() {
+        scope.$apply(function () {
           scope.$eval(attrs.ngEnter, {'event': event});
         });
 
@@ -19,33 +19,87 @@ app.directive('ngEnter', function() {
   };
 });
 
-app.controller('MainController', ['$scope', '$http',
-  function($scope, $http) {
+app.controller('MainController', ['$scope', '$http', '$timeout',
+  function ($scope, $http, $timeout) {
     $scope.email = '';
     $scope.text = '';
-	$scope.disableSubmit = false;
-	
-	function addText(text) {
-	  $scope.text = text + "\r\n" + $scope.text;
-	}
-	
-	$scope.submit = function submit() {
-	  if (!validateEmail($scope.email)) {
-	    addText($scope.email + " is not a valid email. Try again...");
-	  }
-	  else {
-	    addText("Processing...");
-	  	$scope.disableSubmit = true;
+    $scope.disableSubmit = false;
+    var numberOfItems = 0;
 
-      addText("Getting number of pdfs...");
+    var items = [];
 
-      $http.get('/countitems', function(data) {
-        console.log(data);
-      });
+    function addText(text) {
+      $scope.text = $scope.text + "\r\n" + text;
+    }
 
-      for (var i = 0; i < 10; i++) {
+    function addLine(text) {
+      $scope.text = $scope.text + text;
+    }
+
+    function getItems(index, callback) {
+      if (index >= 10) {
+        callback();
       }
-	  }
-	}
+      else {
+        index++;
+        var rand = Math.floor(Math.random() * numberOfItems);
+
+        addText("Generating random number in range 0-" + (numberOfItems - 1) + " (numberOfItems - 1)... " + rand);
+
+        addText("Getting name for pdf with index " + rand + "... ");
+
+        $http.get('/getnameforitem.php?index=' + rand)
+          .success(function (data) {
+            addLine(data);
+
+            var title = data;
+
+            $http.get('/countpages.php?name=' + title).success(function (numberOfPages) {
+              addText('Getting number of pages... ' + numberOfPages);
+
+              addText('Selecting random page in range 1-' + numberOfPages + "... ");
+
+              var randPage = Math.floor(Math.random() * numberOfPages + 1);
+
+              addLine(randPage);
+
+              items.push(
+                {
+                  page: randPage,
+                  workTitle: title,
+                  workIndex: rand
+                }
+              );
+
+              $timeout(function () {
+                getItems(index, callback);
+              }, 500);
+            });
+          });
+      }
+    }
+
+    $scope.submit = function submit() {
+      if (!validateEmail($scope.email)) {
+        addText($scope.email + " is not a valid email. Try again...");
+      }
+      else {
+        addText("Processing...");
+        $scope.disableSubmit = true;
+
+        addText("Getting number of pdfs... ");
+
+        $http.get('/countitems.php')
+          .success(function (data) {
+            addLine(data.numberOfItems);
+
+            numberOfItems = data.numberOfItems;
+
+            getItems(0, function () {
+              console.log(items);
+            });
+          });
+      }
+    }
   }
 ]); 
