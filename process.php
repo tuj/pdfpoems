@@ -8,36 +8,28 @@ require_once('poempdf.php');
 
 // Process:
 // Get parameters from POST.
-$works = htmlspecialchars($_POST["works"]);
-$pages = htmlspecialchars($_POST["pages"]);
-
-$workTitles = array();
+$input = file_get_contents('php://input');
+$data = json_decode($input);
+$items = $data->items;
 
 // Generate pdf.
 $pdf = new PoemPdf();
-
-for ($i = 0; $i < count($works); $i++) {
-  $workIndex = $works[$i];
-  $workTitles[$i] = $pdf->getNameForIndex($workIndex);
-  $pdf->addPageFromFile('pdfs/' . $workTitles[$i], $pages[$i]);
+$pdf->AddPage();
+$pdf->SetFont('Courier', 'B', 14);
+$pdf->Cell(40, 10, 'Author');
+$pdf->Ln();
+$pdf->Ln();
+for ($i = 0; $i < count($items); $i++) {
+  $pdf->Cell(40, 10, 'Side ' . $items[$i]->page . ' fra "' . $items[$i]->title . '"');
+  $pdf->Ln();
 }
 
-// Generate cover page.
-$pdf->AddPage('P');
-$pdf->SetDisplayMode(real,'default');
 
-$pdf->SetXY (10,50);
-$pdf->SetFontSize(10);
-$pdf->Write(5,'Congratulations! You have generated a PDF.');
+for ($i = 0; $i < count($items); $i++) {
+  $pdf->addPageFromFile('pdfs/' . $items[$i]->title, $items[$i]->page);
+}
 
 // Send mail to receiver.
 // Send succes result back to the frontend.
 
-/*
-require_once('poempdf.php');
-
-$pdf = new PoemPdf();
-$pdf->addPageFromFile('pdfs/2.pdf', 7);
-$pdf->addPageFromFile('pdfs/1.pdf', 350);
-*/
 $pdf->Output('concat.pdf', 'D');

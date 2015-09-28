@@ -66,8 +66,8 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
               items.push(
                 {
                   page: randPage,
-                  workTitle: title,
-                  workIndex: rand
+                  title: title,
+                  index: rand
                 }
               );
 
@@ -96,7 +96,17 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
             numberOfItems = data.numberOfItems;
 
             getItems(0, function () {
-              console.log(items);
+              $http.post('/process.php', {
+                "items": items,
+                "email": $scope.email
+              }).then(
+                function success(data) {
+                  console.log(data);
+                },
+                function error(reason) {
+                  console.log(reason);
+                }
+              );
             });
           });
       }
