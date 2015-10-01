@@ -3,7 +3,7 @@
   color: green;
   font-family: courier;
   font-weight: bold;
-  font-size: 2vw;
+  font-size: 16px;
   padding: 0
   border: 0;
 }
@@ -21,7 +21,7 @@ button:focus {
   color: green;
   font-family: courier;
   font-weight: bold;
-  font-size: 2vw;
+  font-size: 16px;
 }
 
 pre {
@@ -30,5 +30,5 @@ pre {
   color: green;
   font-family: courier;
   font-weight: bold;
-  font-size: 2vw;
+  font-size: 16px;
 }

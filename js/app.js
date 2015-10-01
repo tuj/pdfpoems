@@ -30,6 +30,8 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
 
     function addText(text) {
       $scope.text = $scope.text + "\r\n" + text;
+
+      window.scrollTo(0,document.body.scrollHeight);
     }
 
     function addLine(text) {
@@ -62,6 +64,8 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
               var randPage = Math.floor(Math.random() * numberOfPages + 1);
 
               addLine(randPage);
+
+              addText("");
 
               items.push(
                 {
@@ -101,7 +105,11 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
                 "email": $scope.email
               }).then(
                 function success(data) {
-                  console.log(data);
+                  addText("Success!");
+                  addText("Restarting in 5 seconds...");
+                  $timeout(function() {
+                    window.location.reload();
+                  }, 5000);
                 },
                 function error(reason) {
                   console.log(reason);

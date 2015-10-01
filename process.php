@@ -1,10 +1,10 @@
 ﻿<?php
 /**
- * Inspired by http://www.setasign.com/products/fpdi/demos/concatenate-fake/
- *
  * Made by github.com/tuj
  */
+
 require_once('poempdf.php');
+require_once('PHPMailer-master/class.phpmailer.php');
 
 // Process:
 // Get parameters from POST.
@@ -24,12 +24,26 @@ for ($i = 0; $i < count($items); $i++) {
   $pdf->Ln();
 }
 
-
 for ($i = 0; $i < count($items); $i++) {
   $pdf->addPageFromFile('pdfs/' . $items[$i]->title, $items[$i]->page);
 }
 
-// Send mail to receiver.
-// Send succes result back to the frontend.
+$mail = new PHPMailer();
 
-$pdf->Output('concat.pdf', 'D');
+$mail->SetFrom('test@example.com', '');
+
+$mail->AddAddress($data->email, "");
+
+$mail->Subject = "Digt";
+
+$mail->msgHTML(file_get_contents('mail/contents.html'), dirname(__FILE__));
+
+$attachment= $pdf->Output('digt.pdf', 'S');
+
+$mail->AddStringAttachment($attachment, 'digt.pdf');
+
+if(!$mail->Send()) {
+  echo "Mailer Error: " . $mail->ErrorInfo;
+} else {
+  echo "Message sent!";
+}
