@@ -50,13 +50,13 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
 
         addText("Getting name for pdf with index " + rand + "... ");
 
-        $http.get('/getnameforitem.php?index=' + rand)
+        $http.get('getnameforitem.php?index=' + rand)
           .success(function (data) {
             addLine(data);
 
             var title = data;
 
-            $http.get('/countpages.php?name=' + title).success(function (numberOfPages) {
+            $http.get('countpages.php?name=' + title).success(function (numberOfPages) {
               addText('Getting number of pages... ' + numberOfPages);
 
               addText('Selecting random page in range 1-' + numberOfPages + "... ");
@@ -93,14 +93,14 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
 
         addText("Getting number of pdfs... ");
 
-        $http.get('/countitems.php')
+        $http.get('countitems.php')
           .success(function (data) {
             addLine(data.numberOfItems);
 
             numberOfItems = data.numberOfItems;
 
             getItems(0, function () {
-              $http.post('/process.php', {
+              $http.post('process.php', {
                 "items": items,
                 "email": $scope.email
               }).then(
@@ -120,4 +120,4 @@ app.controller('MainController', ['$scope', '$http', '$timeout',
       }
     }
   }
-]); 
+]);
